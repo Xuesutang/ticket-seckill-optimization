@@ -1,0 +1,4 @@
+.git
+**/target
+docker/mysql/data
+docker/redis-data

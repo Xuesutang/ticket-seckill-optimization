@@ -1,0 +1,12 @@
+# IDE and build output
+.idea/
+*.iml
+**/target/
+
+# Local secrets and runtime data
+.env
+.env.*
+!.env.example
+docker/mysql/data/
+docker/redis-data/
+*.log

@@ -1,0 +1,55 @@
+services:
+  mysql:
+    image: mysql:5.7.36
+    container_name: seckill-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: seckill
+      TZ: Asia/Shanghai
+    ports: ["3306:3306"]
+    volumes:
+      - ./docker/mysql/data:/var/lib/mysql
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+  redis:
+    image: redis:7-alpine
+    container_name: seckill-redis
+    restart: unless-stopped
+    command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
+    ports: ["6379:6379"]
+    volumes: ["./docker/redis-data:/data"]
+  namesrv:
+    image: foxwishwo/rocketmq:server-4.5.1
+    container_name: seckill-rmqnamesrv
+    restart: unless-stopped
+    ports: ["9876:9876"]
+  broker:
+    image: foxwishwo/rocketmq:broker-4.5.1
+    container_name: seckill-rmqbroker
+    restart: unless-stopped
+    depends_on: [namesrv]
+    environment:
+      NAMESRV_ADDR: namesrv:9876
+    ports: ["10909:10909", "10911:10911"]
+  console:
+    image: pangliang/rocketmq-console-ng
+    container_name: seckill-rmqconsole
+    restart: unless-stopped
+    depends_on: [namesrv]
+    environment:
+      JAVA_OPTS: -Drocketmq.namesrv.addr=namesrv:9876
+    ports: ["8180:8080"]
+  app:
+    build: .
+    container_name: seckill-app
+    restart: unless-stopped
+    depends_on: [mysql, redis, namesrv, broker]
+    environment:
+      MYSQL_URL: jdbc:mysql://mysql:3306/seckill?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+      ROCKETMQ_NAMESRV: namesrv:9876
+      JWT_SECRET: ${JWT_SECRET}
+    ports: ["8081:8081"]

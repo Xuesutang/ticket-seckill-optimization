@@ -1,0 +1,20 @@
+server:
+  port: ${SERVER_PORT:8081}
+spring:
+  application:
+    name: ticket-seckill
+  datasource:
+    url: ${MYSQL_URL}
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+  redis:
+    host: ${REDIS_HOST}
+    port: ${REDIS_PORT}
+    password: ${REDIS_PASSWORD}
+rocketmq:
+  name-server: ${ROCKETMQ_NAMESRV}
+  producer:
+    group: seckill-order-producer
+security:
+  jwt:
+    secret: ${JWT_SECRET}

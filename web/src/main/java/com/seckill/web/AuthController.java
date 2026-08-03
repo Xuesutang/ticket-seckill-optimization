@@ -1,0 +1,3 @@
+package com.seckill.web;
+import com.seckill.common.*; import com.seckill.infrastructure.UserMapper; import org.springframework.web.bind.annotation.*; import java.util.*;
+@RestController @RequestMapping("/api/auth") public class AuthController { private final UserMapper users; private final JwtUtil jwt; public AuthController(UserMapper users,JwtUtil jwt){this.users=users;this.jwt=jwt;} @PostMapping("/login") public ApiResult<Map<String,String>> login(@RequestBody Map<String,String> body){Long id=users.login(body.get("username"),body.get("password"));if(id==null)throw new BusinessException(401,"用户名或密码错误");return ApiResult.ok(Collections.singletonMap("token",jwt.create(id)));} }

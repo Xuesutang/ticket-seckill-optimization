@@ -1,0 +1,3 @@
+package com.seckill.web;
+import com.seckill.common.ApiResult; import com.seckill.common.BusinessException; import org.slf4j.Logger; import org.slf4j.LoggerFactory; import org.springframework.web.bind.annotation.*;
+@RestControllerAdvice public class GlobalExceptionHandler { private static final Logger log=LoggerFactory.getLogger(GlobalExceptionHandler.class); @ExceptionHandler(BusinessException.class) public ApiResult<Void> business(BusinessException e){return ApiResult.fail(e.getCode(),e.getMessage());} @ExceptionHandler(Exception.class) public ApiResult<Void> other(Exception e){log.error("Unhandled request failure",e);return ApiResult.fail(500,"服务器内部错误");} }
