@@ -69,9 +69,3 @@ docker compose up -d --build
 docker compose ps
 ```
 
-## 安全约定
-
-- `.env` 存放真实密码和密钥，已被 Git 忽略，禁止提交。
-- `.env.example` 只包含变量名和占位符，应提交到仓库。
-- `.idea`、Maven `target` 目录、MySQL/Redis 数据目录均不会提交。
-- 生产环境应使用强密码、独立数据库账户、HTTPS 与定期轮换的 JWT 密钥。
